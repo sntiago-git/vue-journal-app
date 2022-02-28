@@ -6,10 +6,14 @@
 
 //Getters para devolver informacion del state al componente.
 
-export const getEntriesByTerm = (/*state*/) => {
+//TODO COMENTAR LA DOBLE FUNCION
+export const getEntriesByTerm = (state) => (term = '') => {
 
-    //return state.algo
-
+    if (term.length === 0) {
+        return state.entries
+    } else {
+        return state.entries.filter(entry => entry.text.toLowerCase().includes(term.toLowerCase()))
+    }
 }
 
 export const getEntryById = (/*state*/) => {

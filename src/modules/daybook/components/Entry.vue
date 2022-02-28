@@ -3,16 +3,13 @@
     <!-- Titulo -->
 
     <div class="entry-tittle d-flex">
-      <span class="text-success fs-5 fw-bold">15</span>
-      <span class="mx-1 fs-5">Julio</span>
-      <span class="mx-2 fw-light">2021, Jueves</span>
+      <span class="text-success fs-5 fw-bold">{{ day }}</span>
+      <span class="mx-1 fs-5">{{ month }}</span>
+      <span class="mx-2 fw-light"> {{ year }}, {{ dayName }}</span>
     </div>
 
     <div class="entry-description">
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magnam sint unde
-      corporis ea reprehenderit optio, labore ducimus et alias necessitatibus
-      minima exercitationem atque, fugiat totam commodi? Deleniti labore aut
-      odio.
+      {{ customText }}
     </div>
   </div>
 </template>
@@ -20,9 +17,53 @@
 <script>
 export default {
   name: "EntryComponent",
+  props: {
+    entry: {
+      type: Object,
+      required: true,
+    },
+  },
   methods: {
     goToEntry() {
-      this.$router.push({ name: "daybook-entry", params: { id: 2 } });
+      this.$router.push({
+        name: "daybook-entry",
+        params: { id: this.entry.id },
+      });
+    },
+  },
+  computed: {
+    transformDate() {
+      return new Date(this.entry.date);
+    },
+
+    day() {
+      return this.transformDate.getDate();
+    },
+
+    month() {
+      return Intl.DateTimeFormat("en-US", { month: "long" }).format(
+        this.transformDate
+      );
+    },
+
+    year() {
+      return Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
+        this.transformDate
+      );
+    },
+
+    dayName() {
+      return Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
+        this.transformDate
+      );
+    },
+
+    customText() {
+      //Devolvemos el texto cortado a 150 caracteres maximo.
+      const text = this.entry.text;
+      return text.length > 150
+        ? text.slice(0, 150).trim() + "..."
+        : text.trim();
     },
   },
 };
